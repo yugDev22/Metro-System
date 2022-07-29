@@ -41,8 +41,24 @@ public class TransactionDaoImpl implements TransactionDao {
 
 	@Override
 	public int addTransaction(Transaction transaction) {
-		// TODO Auto-generated method stub
-		return 0;
+		int rows=0;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem","root","wileyc256");
+				PreparedStatement preparedStatement = connection
+						.prepareStatement("INSERT INTO transaction VALUES(?,?,?,?,?,?,?)");) {
+			preparedStatement.setString(1, transaction.getTransactionId());
+			preparedStatement.setInt(2, transaction.getCardId());
+			preparedStatement.setInt(3, transaction.getBoardingStationId());
+			preparedStatement.setInt(4, transaction.getDestinationStationId());
+			preparedStatement.setDouble(5, transaction.getFare());
+			preparedStatement.setObject(6, transaction.getSwipeInTime());
+			preparedStatement.setObject(7, transaction.getSwipeOutTime());
+
+			rows = preparedStatement.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return rows;
 	}
 
 }
