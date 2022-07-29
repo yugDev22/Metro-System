@@ -14,7 +14,6 @@ public class Transaction {
 	private int boardingStationId;
 	private int destinationStationId;
 	private double fare;
-	private double balance;
 	private LocalDateTime swipeInTime;
 	private LocalDateTime swipeOutTime;
 
