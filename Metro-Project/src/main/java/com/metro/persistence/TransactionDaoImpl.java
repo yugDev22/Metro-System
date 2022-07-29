@@ -46,10 +46,10 @@ public class TransactionDaoImpl implements TransactionDao {
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("INSERT INTO transaction VALUES(?,?,?,?,?,?,?)");) {
 			preparedStatement.setString(1, transaction.getTransactionId());
-			preparedStatement.setInt(2, transaction.getCardId());
-			preparedStatement.setInt(3, transaction.getBoardingStationId());
-			preparedStatement.setInt(4, transaction.getDestinationStationId());
-			preparedStatement.setDouble(5, transaction.getFare());
+			preparedStatement.setInt(2, transaction.getBoardingStationId());
+			preparedStatement.setInt(3, transaction.getDestinationStationId());
+			preparedStatement.setDouble(4, transaction.getFare());
+			preparedStatement.setInt(5, transaction.getCardId());
 			preparedStatement.setObject(6, transaction.getSwipeInTime());
 			preparedStatement.setObject(7, transaction.getSwipeOutTime());
 
