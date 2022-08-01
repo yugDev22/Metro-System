@@ -1,36 +1,44 @@
 package com.metro.service;
 
 import com.metro.bean.MetroCard;
+import com.metro.persistence.MetroCardDao;
+import com.metro.persistence.MetroCardDaoImpl;
 
 public class MetroCardServiceImpl implements MetroCardService{
 
+	private MetroCardDao metroCardDao = new MetroCardDaoImpl();
+
 	@Override
 	public MetroCard searchMetroCardById(int cardId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+   return metroCardDao.searchCardById(cardId);
+		
 	}
 
 	@Override
-	public void issueNewMetroCard(int id, int passengerId, double balance) {
-		// TODO Auto-generated method stub
+	public int issueNewMetroCard(MetroCard card) {
+		return metroCardDao.issueNewCard(card);
+		
 		
 	}
 
 	@Override
 	public double checkCardBalance(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return metroCardDao.checkBalance(id);
 	}
 
 	@Override
-	public void updateCardBalance(int id, double balance) {
-		// TODO Auto-generated method stub
+	public int AddCardBalance(int id, double balance) {
+		return metroCardDao.AddBalance(id, balance);
+		
 		
 	}
 
 	@Override
-	public void deleteMetroCard(int cardId) {
-		// TODO Auto-generated method stub
+	public int RefundMetroCard(int cardId) {
+		return metroCardDao.RefundCard(cardId);
+	
 		
 	}
 

@@ -5,9 +5,10 @@ import com.metro.bean.MetroCard;
 public interface MetroCardService {
 	
 	public MetroCard searchMetroCardById(int cardId);
-	public void issueNewMetroCard(int id,int passengerId,double balance);
+	public int issueNewMetroCard(MetroCard card);
 	public double checkCardBalance(int id);
-	public void updateCardBalance(int id, double balance);
-	public void deleteMetroCard(int cardId);
+	public int AddCardBalance(int id, double balance);
+	public int RefundMetroCard(int cardId);
+	
 	
 }
