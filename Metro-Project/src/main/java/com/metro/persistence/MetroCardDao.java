@@ -3,11 +3,10 @@ package com.metro.persistence;
 import com.metro.bean.MetroCard;
 
 public interface MetroCardDao {
-	
 	public MetroCard searchCardById(int cardId);
-	public void issueNewCard(int id,int passengerId,double balance);
+	public int issueNewCard(MetroCard card);
 	public double checkBalance(int id);
-	public void updateBalance(int id, double balance);
-	public void deleteCard(int cardId);
+	public int AddBalance(int id, double balance);
+	public int RefundCard(int cardId);
 	
 }
