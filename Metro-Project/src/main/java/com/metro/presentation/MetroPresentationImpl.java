@@ -1,5 +1,4 @@
 package com.metro.presentation;
-
 import java.util.Scanner;
 
 import com.metro.bean.Passenger;
@@ -10,8 +9,10 @@ public class MetroPresentationImpl implements MetroPresentation {
 
 	private PassengerService passengerService = new PassengerServiceImpl();
 
+
 	@Override
 	public void showMenu() {
+
 		System.out.println("Please select your option :");
 		System.out.println("1. Select Passengers by passenger Id");
 		System.out.println("2. Add a new passenger");
