@@ -16,6 +16,13 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public int addNewTransaction(Transaction transaction) {
+		Transaction lastTran = transactionDao.getLastTransaction();
+		String tid = "t0";
+		if(lastTran!=null) {
+			String lastId=lastTran.getTransactionId().split("t")[1];
+			tid = "t"+Integer.toString(Integer.parseInt(lastId)+1);
+		}
+		transaction.setTransactionId(tid);
 		return transactionDao.addTransaction(transaction);
 	}
 

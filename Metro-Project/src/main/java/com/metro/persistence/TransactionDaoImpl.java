@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -59,6 +60,30 @@ public class TransactionDaoImpl implements TransactionDao {
 			e.printStackTrace();
 		}
 		return rows;
+	}
+
+	@Override
+	public Transaction getLastTransaction() {
+		Transaction transaction=null;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
+				Statement statement = connection
+						.createStatement();) {
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM transaction ORDER BY transactionId DESC LIMIT 1");
+			if(resultSet.next()) {
+				String transactionId = resultSet.getString("transactionId");
+				int boardingStationId = resultSet.getInt("boardingStationId");
+				int destinationStationId = resultSet.getInt("destinationStationId");
+				double fare = resultSet.getDouble("fare");
+				int mcardId = resultSet.getInt("cardId");
+				LocalDateTime swipeInDateTime = (LocalDateTime) resultSet.getObject("swipeInDatetime");
+				LocalDateTime swipeOutDateTime = (LocalDateTime) resultSet.getObject("swipeOutDatetime");
+				transaction = new Transaction(transactionId, mcardId, boardingStationId, destinationStationId, fare, swipeInDateTime, swipeOutDateTime);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return transaction;
 	}
 
 }
