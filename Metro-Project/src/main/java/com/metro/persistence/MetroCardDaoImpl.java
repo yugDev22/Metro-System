@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.metro.bean.MetroCard;
 import com.metro.bean.Passenger;
@@ -12,17 +14,14 @@ import com.metro.bean.Passenger;
 public class MetroCardDaoImpl implements MetroCardDao {
 
 	@Override
-	public MetroCard searchCardById(int cardId) {
-		
+	public MetroCard searchCardById(Integer cardId) {
+
 		MetroCard metroCard = null;
-		Passenger passenger = null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT * FROM card where cardID=?");) {
 
-			
-			
 			preparedStatement.setInt(1, cardId);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -31,9 +30,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 				int id = resultSet.getInt("cardId");
 				double balance = resultSet.getDouble("balance");
 				int passengerId = resultSet.getInt("passengerId");
-				
 
-				metroCard = new MetroCard(id,passengerId, balance);
+				metroCard = new MetroCard(id, passengerId, balance);
 			}
 
 		} catch (SQLException e) {
@@ -41,29 +39,20 @@ public class MetroCardDaoImpl implements MetroCardDao {
 		}
 
 		return metroCard;
-		
-		
+
 	}
 
 	@Override
-	public int issueNewCard(MetroCard card) {
-		
-	   MetroCard card1= searchCardById(card.getCardId());
-	    
-	    if(card1!=null)
-	    	return 0;
-	    
-	    
-		
+	public MetroCard issueNewCard(MetroCard card) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
-						.prepareStatement("INSERT INTO  card(cardId,passengerId) values(?,?)");) {
+						.prepareStatement("INSERT INTO  card(cardId,balance,passengerId) values(?,?,?)");) {
 
-			preparedStatement.setInt(1 , card.getCardId());
-			preparedStatement.setInt(2 , card.getPassengerId());
-		
+			preparedStatement.setInt(1, card.getCardId());
+			preparedStatement.setDouble(2, card.getBalance());
+			preparedStatement.setInt(3, card.getPassengerId());
 
 			rows = preparedStatement.executeUpdate();
 
@@ -71,33 +60,27 @@ public class MetroCardDaoImpl implements MetroCardDao {
 			e.printStackTrace();
 		}
 
-		return rows;
-		
+		if (rows > 0) {
+			return card;
+		}
+		return null;
+
 	}
 
 	@Override
-	public double checkBalance(int id) {
-		
-		   MetroCard card1= searchCardById(id);
-		   if(card1==null)
-		    	return -1;
-		
-		double res=0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+	public Double checkBalance(Integer id) {
+		double res = 0;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT balance FROM card where cardID=?");) {
-			
+
 			preparedStatement.setInt(1, id);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
-			
 				double balance = resultSet.getDouble("balance");
-				
-				
-
 				res = balance;
 			}
 
@@ -106,89 +89,115 @@ public class MetroCardDaoImpl implements MetroCardDao {
 		}
 
 		return res;
-	
+
 	}
 
 	@Override
-	public int AddBalance(int id, double balance) {
-		
-//		 MetroCard card1= searchCardById(id);
-//		   if(card1==null)
-//		    	return -1;
-		
+	public Integer AddBalance(Integer id, Double balance) {
 		int rows = 0;
-		double res = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
-				
-				PreparedStatement preparedStatement1 = connection
-						.prepareStatement("SELECT balance FROM card where cardID=?");) {
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
+				PreparedStatement preparedStatement1 = connection.prepareStatement("update card set balance=balance+? where cardId=?");) {
 
-			
-			
-			preparedStatement1.setInt(1, id);
+			preparedStatement1.setDouble(1, balance);
+			preparedStatement1.setInt(2, id);
 
-			ResultSet resultSet = preparedStatement1.executeQuery();
+			rows = preparedStatement1.executeUpdate();
 
-			if (resultSet.next()) {
-			
-				double balance1 = resultSet.getDouble("balance");
-				
-				
-
-				res = balance1;
-			}
-			
-				
-				PreparedStatement preparedStatement2 = connection
-						.prepareStatement("update card set balance = ? where cardid= ?"); {
-
-		
-			
-			preparedStatement2.setDouble(1 , (balance+res));
-			preparedStatement2.setInt(2 , id);
-		
-
-			rows = preparedStatement2.executeUpdate();
-						}
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-
 		return rows;
-		
-		
+
 	}
 
 	@Override
-	public int RefundCard(int cardId) {
-		
-       MetroCard card2= searchCardById(cardId);
-	    
-	    if(card2==null)
-	    	return 0;
-		
+	public MetroCard RefundCard(Integer cardId) {
+
+		MetroCard card2 = searchCardById(cardId);
+
+		if (card2 == null)
+			return null;
 
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("delete from  card where cardId=?");) {
 
-			preparedStatement.setInt(1 , cardId);
-		
-		
+			preparedStatement.setInt(1, cardId);
 
 			rows = preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		if(rows>0) {
+			return card2;
+		}
+		return null;
 
-		return rows;
-		
-		
 	}
 
+	@Override
+	public MetroCard getLastCard() {
+		MetroCard card = null;
+
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256"); Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM card ORDER BY cardId DESC LIMIT 1");
+			if (resultSet.next()) {
+				Integer cardId = resultSet.getInt("cardId");
+				Double balance = resultSet.getDouble("balance");
+				Integer passengerId = resultSet.getInt("passengerId");
+				card = new MetroCard(cardId, passengerId, balance);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return card;
+	}
+
+	@Override
+	public ArrayList<MetroCard> getAllMetroCards(Integer passengerId) {
+		ArrayList<MetroCard> cardArr = new ArrayList<MetroCard>();
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256"); PreparedStatement statement = connection.prepareStatement("SELECT * FROM card WHERE passengerId=?");) {
+			statement.setInt(1,passengerId);
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				Integer cardId = resultSet.getInt("cardId");
+				Double balance = resultSet.getDouble("balance");
+				Integer passId = resultSet.getInt("passengerId");
+				MetroCard card = new MetroCard(cardId, passId, balance);
+				cardArr.add(card);
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cardArr;
+	}
+
+	@Override
+	public int deductBalance(Integer cardId, double fare) {
+		int rows = 0;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
+				PreparedStatement preparedStatement1 = connection.prepareStatement("update card set balance=balance-? where cardId=?");) {
+
+			preparedStatement1.setDouble(1, fare);
+			preparedStatement1.setInt(2, cardId);
+
+			rows = preparedStatement1.executeUpdate();
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return rows;
+
+	}
 
 }

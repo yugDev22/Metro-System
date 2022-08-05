@@ -1,18 +1,21 @@
 package com.metro.persistence;
 
+import com.metro.bean.MetroCard;
 import com.metro.bean.Passenger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PassengerDaoImpl implements PassengerDao{
 
 	@Override
-	public Passenger searchPassenger(int id) {
+	public Passenger searchPassenger(Integer id) {
 		Passenger passenger=null;
-		try(Connection connection=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem","root","wiley");
+		try(Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement=connection.prepareStatement("SELECT * FROM PASSENGER WHERE PASSENGERID = ?");){
 			
 			preparedStatement.setInt(1, id);
@@ -37,10 +40,10 @@ public class PassengerDaoImpl implements PassengerDao{
 	}
 
 	@Override
-	public int addPassenger(Passenger passenger) {
+	public Passenger addPassenger(Passenger passenger) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("INSERT INTO PASSENGER values(?,?,?,?,?)");) {
 
@@ -56,15 +59,17 @@ public class PassengerDaoImpl implements PassengerDao{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return rows;
+		if(rows>0) {
+			return passenger;
+		}
+		return null;
 	}
 
 	@Override
-	public int updatePassengerDetails(Passenger passenger) {
+	public Passenger updatePassengerDetails(Passenger passenger) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/metrosystem", "root",
-				"wiley");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("UPDATE PASSENGER SET PASSENGERNAME=?,PASSENGERPHONE=?,PASSENGEREMAIL=?,PASSENGERAGE=? WHERE PASSENGERID=?");) {
 
@@ -80,9 +85,31 @@ public class PassengerDaoImpl implements PassengerDao{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		if(rows>0) {
+			return passenger;
+		}
+		return null;
 
-		return rows;
+	}
 
+	@Override
+	public Passenger getLastPassenger() {
+		Passenger passenger=null;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256"); Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM card ORDER BY cardId DESC LIMIT 1");
+			if (resultSet.next()) {
+				Integer pid = resultSet.getInt("passengerId");
+				String pname = resultSet.getString("passengerName");
+				String phone  = resultSet.getString("passengerPhoneNumber");
+				String email  = resultSet.getString("passengerEmail");
+				Integer page = resultSet.getInt("passengerAge");
+				passenger = new Passenger(pid, pname, phone, email, page);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return passenger;
 	}
 
 

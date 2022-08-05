@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetroCard {
-	private int cardId;
-	private int passengerId;
-	private double balance;
+	private Integer cardId;
+	private Integer passengerId;
+	private Double balance;
 }

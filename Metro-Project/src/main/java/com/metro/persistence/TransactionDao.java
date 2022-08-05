@@ -8,5 +8,7 @@ public interface TransactionDao {
 	
 	public ArrayList<Transaction> getTransactionsByCardId(int cardId);
 	public int addTransaction(Transaction transaction);
+	public Transaction alreadySwipedIn(Integer cardId);
 	public Transaction getLastTransaction();
+	public Transaction updateTransaction(Transaction transaction);
 }

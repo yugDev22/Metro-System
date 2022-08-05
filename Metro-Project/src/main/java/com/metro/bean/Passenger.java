@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Passenger {
-	private int passengerId;
+	private Integer passengerId;
 	private String passengerName;
 	private String passengerPhoneNumber;
 	private String passengerEmail;
-	private int age;
+	private Integer age;
 }

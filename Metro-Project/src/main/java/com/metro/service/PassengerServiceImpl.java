@@ -9,23 +9,33 @@ public class PassengerServiceImpl implements PassengerService {
 	private PassengerDao passengerDao=new PassengerDaoImpl();
 
 	@Override
-	public Passenger searchPassengerById(int id) {
-		
+	public Passenger searchPassengerById(Integer id) {
 		return passengerDao.searchPassenger(id);
 	}
 
 	@Override
-	public int addNewPassenger(Passenger passenger) {
-		if(passengerDao.addPassenger(passenger)>0)
-			return 1;
-		return 0;
+	public Passenger addNewPassenger(Passenger passenger) {
+		if(passengerDao.searchPassenger(passenger.getPassengerId())==null) {
+			return passengerDao.addPassenger(passenger);
+		}
+		return null;
 	}
 
 	@Override
-	public int updatingPassengerDetails(Passenger passenger) {
-		if(passengerDao.updatePassengerDetails(passenger)>0)
-			return 1;
-		return 0;
+	public Passenger updatingPassengerDetails(Passenger passenger) {
+		if(passengerDao.searchPassenger(passenger.getPassengerId())!=null) {
+			return passengerDao.updatePassengerDetails(passenger);
+		}
+		return null;
 	}
+
+//	@Override
+//	public Integer getPassengerId() {
+//		Passenger passenger = passengerDao.getLastPassenger();
+//		if(passenger!=null) {
+//			return passenger.getPassengerId()+1;
+//		}
+//		return 2001;
+//	}
 
 }

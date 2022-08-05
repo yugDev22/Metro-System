@@ -17,7 +17,8 @@ public class StationDaoImpl implements StationDao {
 	@Override
 	public Station searchStationById(int stationId) {
 		Station station = null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/wileyProject", "root", "root");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT * FROM stations where stationId=?");) {
 
@@ -48,7 +49,8 @@ public class StationDaoImpl implements StationDao {
 		try 
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/wileyProject", "root", "root");
+			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+					"wileyc256");
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO stations values(?,?,?,?)");
 
 			preparedStatement.setInt(1, station.getStationId());
@@ -74,10 +76,11 @@ public class StationDaoImpl implements StationDao {
 	}
 
 	@Override
-	public List<Station> getAllStations() 
+	public ArrayList<Station> getAllStations() 
 	{
-		List<Station> stationList = new ArrayList<Station>();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/wileyProject", "root", "root"); Statement statement = connection.createStatement();) {
+		ArrayList<Station> stationList = new ArrayList<Station>();
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256"); Statement statement = connection.createStatement();) {
 
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM stations");
 

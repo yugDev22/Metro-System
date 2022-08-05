@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Station {
-	private int stationId;
+	private Integer stationId;
 	private String stationName;
-	private int prevStationId;
-	private int nextStationId;
+	private Integer prevStationId;
+	private Integer nextStationId;
 }

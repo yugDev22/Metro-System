@@ -86,4 +86,54 @@ public class TransactionDaoImpl implements TransactionDao {
 		return transaction;
 	}
 
+	@Override
+	public Transaction alreadySwipedIn(Integer cardId) {
+		Transaction swipedIn=null;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
+				"wileyc256");
+				PreparedStatement statement = connection.prepareStatement(
+						"SELECT * FROM transaction WHERE cardID=? AND destinationStationId=0");) {
+			statement.setInt(1, cardId);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				String transactionId = resultSet.getString("transactionId");
+				int boardingStationId = resultSet.getInt("boardingStationId");
+				int destinationStationId = resultSet.getInt("destinationStationId");
+				double fare = resultSet.getDouble("fare");
+				int mcardId = resultSet.getInt("cardId");
+				LocalDateTime swipeInDateTime = (LocalDateTime) resultSet.getObject("swipeInDatetime");
+				LocalDateTime swipeOutDateTime = (LocalDateTime) resultSet.getObject("swipeOutDatetime");
+				swipedIn = new Transaction(transactionId, mcardId, boardingStationId, destinationStationId, fare, swipeInDateTime, swipeOutDateTime);
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return swipedIn;
+	}
+
+	@Override
+	public Transaction updateTransaction(Transaction transaction) {
+		int rows=0;
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem","root","wileyc256");
+				PreparedStatement preparedStatement = connection
+						.prepareStatement("UPDATE transaction SET destinationStationId=?,fare=?,swipeOutDatetime=? WHERE transactionId=?");) {
+			
+			preparedStatement.setInt(1, transaction.getDestinationStationId());
+			preparedStatement.setDouble(2, transaction.getFare());
+			preparedStatement.setObject(3, transaction.getSwipeOutTime());
+			preparedStatement.setString(4, transaction.getTransactionId());
+
+			rows = preparedStatement.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		if(rows>0) {
+			return transaction;
+		}
+		return null;
+	}
+
 }
