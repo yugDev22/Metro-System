@@ -10,15 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.metro.bean.Station;
+import com.metro.db.DatabaseCredentials;
 
 
 public class StationDaoImpl implements StationDao {
+	
+	private static String URL = DatabaseCredentials.getURL();
+	private static String USER = DatabaseCredentials.getUSER();
+	private static String PWD = DatabaseCredentials.getPWD();
 
 	@Override
 	public Station searchStationById(int stationId) {
 		Station station = null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT * FROM stations where stationId=?");) {
 
@@ -49,8 +54,8 @@ public class StationDaoImpl implements StationDao {
 		try 
 		{
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-					"wileyc256");
+			Connection connection = DriverManager.getConnection(URL, USER,
+					PWD);
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO stations values(?,?,?,?)");
 
 			preparedStatement.setInt(1, station.getStationId());
@@ -79,8 +84,8 @@ public class StationDaoImpl implements StationDao {
 	public ArrayList<Station> getAllStations() 
 	{
 		ArrayList<Station> stationList = new ArrayList<Station>();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256"); Statement statement = connection.createStatement();) {
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD); Statement statement = connection.createStatement();) {
 
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM stations");
 

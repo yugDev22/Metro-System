@@ -10,14 +10,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import com.metro.bean.Transaction;
+import com.metro.db.DatabaseCredentials;
 
 public class TransactionDaoImpl implements TransactionDao {
 
+	private static String URL = DatabaseCredentials.getURL();
+	private static String USER = DatabaseCredentials.getUSER();
+	private static String PWD = DatabaseCredentials.getPWD();
 	@Override
 	public ArrayList<Transaction> getTransactionsByCardId(int cardId) {
 		ArrayList<Transaction> transactionArray = new ArrayList<Transaction>();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL,USER,
+				PWD);
 				PreparedStatement statement = connection
 						.prepareStatement("SELECT * FROM transaction WHERE cardID=?");) {
 			statement.setInt(1, cardId);
@@ -43,7 +47,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	@Override
 	public int addTransaction(Transaction transaction) {
 		int rows=0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem","root","wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL,USER,PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("INSERT INTO transaction VALUES(?,?,?,?,?,?,?)");) {
 			preparedStatement.setString(1, transaction.getTransactionId());
@@ -65,8 +69,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	@Override
 	public Transaction getLastTransaction() {
 		Transaction transaction=null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL,USER,PWD);
 				Statement statement = connection
 						.createStatement();) {
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM transaction ORDER BY transactionId DESC LIMIT 1");
@@ -89,8 +92,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	@Override
 	public Transaction alreadySwipedIn(Integer cardId) {
 		Transaction swipedIn=null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL,USER,PWD);
 				PreparedStatement statement = connection.prepareStatement(
 						"SELECT * FROM transaction WHERE cardID=? AND destinationStationId=0");) {
 			statement.setInt(1, cardId);
@@ -116,7 +118,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	@Override
 	public Transaction updateTransaction(Transaction transaction) {
 		int rows=0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem","root","wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL,USER,PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("UPDATE transaction SET destinationStationId=?,fare=?,swipeOutDatetime=? WHERE transactionId=?");) {
 			

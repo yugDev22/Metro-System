@@ -10,15 +10,20 @@ import java.util.ArrayList;
 
 import com.metro.bean.MetroCard;
 import com.metro.bean.Passenger;
+import com.metro.db.DatabaseCredentials;
 
 public class MetroCardDaoImpl implements MetroCardDao {
+	
+	private static String URL = DatabaseCredentials.getURL();
+	private static String USER = DatabaseCredentials.getUSER();
+	private static String PWD = DatabaseCredentials.getPWD();
 
 	@Override
 	public MetroCard searchCardById(Integer cardId) {
 
 		MetroCard metroCard = null;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT * FROM card where cardID=?");) {
 
@@ -45,8 +50,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	@Override
 	public MetroCard issueNewCard(MetroCard card) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("INSERT INTO  card(cardId,balance,passengerId) values(?,?,?)");) {
 
@@ -70,8 +75,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	@Override
 	public Double checkBalance(Integer id) {
 		double res = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("SELECT balance FROM card where cardID=?");) {
 
@@ -95,8 +100,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	@Override
 	public Integer AddBalance(Integer id, Double balance) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement1 = connection.prepareStatement("update card set balance=balance+? where cardId=?");) {
 
 			preparedStatement1.setDouble(1, balance);
@@ -120,8 +125,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 			return null;
 
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement = connection
 						.prepareStatement("delete from  card where cardId=?");) {
 
@@ -143,8 +148,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	public MetroCard getLastCard() {
 		MetroCard card = null;
 
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256"); Statement statement = connection.createStatement();) {
+		try (Connection connection = DriverManager.getConnection(URL,USER,
+				PWD); Statement statement = connection.createStatement();) {
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM card ORDER BY cardId DESC LIMIT 1");
 			if (resultSet.next()) {
 				Integer cardId = resultSet.getInt("cardId");
@@ -162,8 +167,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	@Override
 	public ArrayList<MetroCard> getAllMetroCards(Integer passengerId) {
 		ArrayList<MetroCard> cardArr = new ArrayList<MetroCard>();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256"); PreparedStatement statement = connection.prepareStatement("SELECT * FROM card WHERE passengerId=?");) {
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD); PreparedStatement statement = connection.prepareStatement("SELECT * FROM card WHERE passengerId=?");) {
 			statement.setInt(1,passengerId);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {
@@ -184,8 +189,8 @@ public class MetroCardDaoImpl implements MetroCardDao {
 	@Override
 	public int deductBalance(Integer cardId, double fare) {
 		int rows = 0;
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Metrosystem", "root",
-				"wileyc256");
+		try (Connection connection = DriverManager.getConnection(URL, USER,
+				PWD);
 				PreparedStatement preparedStatement1 = connection.prepareStatement("update card set balance=balance-? where cardId=?");) {
 
 			preparedStatement1.setDouble(1, fare);
