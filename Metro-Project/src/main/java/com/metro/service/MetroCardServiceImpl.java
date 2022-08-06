@@ -19,8 +19,10 @@ public class MetroCardServiceImpl implements MetroCardService {
 	@Override
 	public MetroCard issueNewMetroCard(MetroCard card) {
 		if(searchMetroCardById(card.getCardId())==null) {
-			card.setCardId(getCardId());
-			return metroCardDao.issueNewCard(card);
+			if(card.getBalance()>0) {
+				card.setCardId(getCardId());
+				return metroCardDao.issueNewCard(card);
+			}
 		}
 		return null;
 

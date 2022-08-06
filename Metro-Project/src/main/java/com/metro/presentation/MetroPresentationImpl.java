@@ -72,6 +72,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 						newCard = metroCardService.issueNewMetroCard(newCard);
 						System.out.println("New MetroCard Generated for you "+passenger.getPassengerName()+"!");
 						System.out.println("Card id: "+newCard.getCardId());
+						System.out.println("you can add balance to your card now..");
 						flag1=false;
 						
 					}
@@ -98,11 +99,12 @@ public class MetroPresentationImpl implements MetroPresentation {
 					System.out.println(">>> Welcome "+passenger.getPassengerName()+" <<<");
 					System.out.println("please enter your choice:");
 					System.out.println("1. Show All cards");
-					System.out.println("2. Swipe In / Swipe Out");
-					System.out.println("3. Check Card Balance");
-					System.out.println("4. Recharge Card");
-					System.out.println("5. Show all transactions of a card");
-					System.out.println("6. Back");
+					System.out.println("2. Issue New card");
+					System.out.println("3. Swipe In / Swipe Out");
+					System.out.println("4. Check Card Balance");
+					System.out.println("5. Recharge Card");
+					System.out.println("6. Show all transactions of a card");
+					System.out.println("7. Back");
 					choice = Integer.parseInt(scanner.nextLine());
 					switch(choice) {
 						case 1:
@@ -113,6 +115,20 @@ public class MetroPresentationImpl implements MetroPresentation {
 						
 							break;
 						case 2:
+							System.out.println("Issuing new card...");
+							System.out.println("Enter balance to add: ");
+							double bal = Double.parseDouble(scanner.nextLine());
+							MetroCard nCard = metroCardService.issueNewMetroCard(new MetroCard(0, passenger.getPassengerId(), bal));
+							if(nCard!=null) {
+								System.out.println("Card generated: ");
+								System.out.println("Card ID: "+nCard.getCardId());
+								System.out.println("Card balance: "+nCard.getBalance());
+							}
+							else {
+								System.out.println("Unable to issue card, please check if entered details are valid..");
+							}
+							break;
+						case 3:
 							System.out.println("Select card: ");
 							int i=0;
 							ArrayList<MetroCard> cardArr = metroCardService.getAllCards(passenger.getPassengerId());
@@ -195,7 +211,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 							}
 							
 							break;
-						case 3:
+						case 4:
 							System.out.println("Select card: ");
 							i=0;
 							cardArr = metroCardService.getAllCards(passenger.getPassengerId());
@@ -214,7 +230,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 							MetroCard card1 = cardArr.get(cardNo-1);
 							System.out.println("Balance of card "+card1.getCardId()+" is : "+card1.getBalance());
 							break;
-						case 4:
+						case 5:
 							System.out.println("Select card: ");
 							i=0;
 							cardArr = metroCardService.getAllCards(passenger.getPassengerId());
@@ -232,7 +248,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 							}
 							MetroCard card2 = cardArr.get(cardNo-1);
 							System.out.println("Enter balance to add: ");
-							double bal = Double.parseDouble(scanner.nextLine());
+							bal = Double.parseDouble(scanner.nextLine());
 							if(metroCardService.AddCardBalance(card2.getCardId(), bal)!=null) {
 								System.out.println("Balance updated");
 							}
@@ -240,7 +256,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 								System.out.println("Unable to add!");
 							}
 							break;
-						case 5:
+						case 6:
 							System.out.println("Select card: ");
 							i=0;
 							cardArr = metroCardService.getAllCards(passenger.getPassengerId());
@@ -262,7 +278,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 								System.out.println(t);
 							}
 							break;
-						case 6:
+						case 7:
 							System.out.println("Thank you for using this service");
 							flag=false;
 							break;
