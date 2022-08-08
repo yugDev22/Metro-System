@@ -14,9 +14,9 @@ import com.metro.db.DatabaseCredentials;
 
 public class MetroCardDaoImpl implements MetroCardDao {
 	
-	private static String URL = DatabaseCredentials.getURL();
-	private static String USER = DatabaseCredentials.getUSER();
-	private static String PWD = DatabaseCredentials.getPWD();
+	private static String URL = "jdbc:mysql://127.0.0.1:3306/metrosystem";
+	private static String USER = "root";
+	private static String PWD = "wiley";
 
 	@Override
 	public MetroCard searchCardById(Integer cardId) {

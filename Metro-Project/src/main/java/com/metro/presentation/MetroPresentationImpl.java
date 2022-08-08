@@ -68,7 +68,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 						System.out.println("Passenger Id:"+passenger.getPassengerId());
 						System.out.println("Passenger name:"+passenger.getPassengerName());
 						System.out.println("Generating Metro card for you.....");
-						MetroCard newCard = new MetroCard(0,passenger.getPassengerId(),0.0);
+						MetroCard newCard = new MetroCard(0,passenger.getPassengerId(),100.0);
 						newCard = metroCardService.issueNewMetroCard(newCard);
 						System.out.println("New MetroCard Generated for you "+passenger.getPassengerName()+"!");
 						System.out.println("Card id: "+newCard.getCardId());
@@ -94,6 +94,9 @@ public class MetroPresentationImpl implements MetroPresentation {
 			Integer id = Integer.parseInt(scanner.nextLine());
 			Passenger passenger = passengerService.searchPassengerById(id);
 			if(passenger!=null) {
+				System.out.println("Enter your password: ");
+				String pass=scanner.nextLine();
+				if(pass.equals(passenger.getPassengerEmail())) {
 				boolean flag=true;
 				while(flag) {
 					System.out.println(">>> Welcome "+passenger.getPassengerName()+" <<<");
@@ -118,7 +121,7 @@ public class MetroPresentationImpl implements MetroPresentation {
 							System.out.println("Issuing new card...");
 							System.out.println("Enter balance to add: ");
 							double bal = Double.parseDouble(scanner.nextLine());
-							MetroCard nCard = metroCardService.issueNewMetroCard(new MetroCard(0, passenger.getPassengerId(), bal));
+							MetroCard nCard = metroCardService.issueNewMetroCard(new MetroCard(0, passenger.getPassengerId(), 100+bal));
 							if(nCard!=null) {
 								System.out.println("Card generated: ");
 								System.out.println("Card ID: "+nCard.getCardId());
@@ -285,6 +288,10 @@ public class MetroPresentationImpl implements MetroPresentation {
 						default:
 							System.out.println("Enter valid choice!");
 					}
+				}
+				}
+				else {
+					System.out.println("Please re-enter your password!");
 				}
 				
 			}
